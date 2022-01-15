@@ -5,7 +5,7 @@ Java Error Messages Wizard - Write Good Error Message
 
 * Error Code Design
 * Standard Error Message Format
-* Resource Bundle
+* Resource Bundle: properties file and i18n
 * slf4j friendly
 * IntelliJ IDEA friendly
 
