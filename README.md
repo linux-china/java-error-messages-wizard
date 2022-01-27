@@ -99,4 +99,5 @@ impl fmt::Display for ErrorMessages {
 * jdoctor:  https://github.com/melix/jdoctor
 * HTTP response status codes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 * HTTP Status cheatsheet: https://devhints.io/http-status
-* @PropertyKey support for slf4j message format: https://youtrack.jetbrains.com/issue/IDEA-286726
+* @PropertyKey support for slf4j message format - https://youtrack.jetbrains.com/issue/IDEA-286726
+* @PrintFormat: annotation to printf-like methods - https://youtrack.jetbrains.com/issue/IDEA-283556
