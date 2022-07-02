@@ -73,25 +73,35 @@ Properties file is friendly for i18n and IDE friendly now
 * MessageFormat support
 * Resource Bundle for i18n support
 
-Yes, you can choose Enum and POJO class, but some complication. If you use Rust, and Enum is good choice.
+Yes, you can choose Enum and POJO class, but some complication.
+
+If you use Rust, and Enum is good choice, for example `thiserror` + `error-stack` :
 
 ```rust
-#[derive(Debug)]
-enum ErrorMessages {
-    AppLogin404 {
-        email: String,
-    },
-    AppLogin405(String),
+use thiserror::Error as ThisError;
+
+/// errors for config component: app-100
+#[derive(ThisError, Debug)]
+pub enum ConfigError {
+    #[error("APP-100404: config file not found: {0}")]
+    NotFound(String),
+    #[error("APP-100422: invalid JSON Format: {0}")]
+    Invalid(String),
 }
 
-impl fmt::Display for ErrorMessages {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // extract enum name parameter
-        // output message from java-properties
-        write!(f, "{:?}", self)
-    }
+fn parse_config() -> Result<ConfigMap, ConfigError> {
+    let json_file = "config.json";
+    let config = std::fs::read_to_string(json_file)
+        .report()
+        .change_context(ConfigError::NotFound(json_file.to_string()))?;
+    let map: ConfigMap = serde_json::from_str(&config)
+        .report()
+        .change_context(ConfigError::Invalid(json_file.to_string()))?;
+    Ok(map)
 }
 ```
+
+For more error code design with Rust, please visit https://github.com/linux-china/rust-error-messages-wizard
 
 # References
 
