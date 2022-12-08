@@ -46,9 +46,80 @@ Message format for an error: `long description(short desc): because/reason --- d
 Example as following:
 
 ```properties   
-ERROR-CODE: long description(short desc): because/reason --- document link -- solutions
+ERROR-CODE:long description(short desc): because/reason --- document link -- solutions
 RST-100400=Failed to log in system with email and password(Email login failed): can not find account with email {0} --- please refer https://example.com/login/byemail  --- Solutions: 1. check your email  2. check your password
 RST-100401=Failed to log in system with phone and pass(Phone login failed): can not find account with phone {0} --- please refer https://example.com/login/byphone  --- Solutions: 1. check your phone  2. check your pass code in SMS
+```
+
+# Java Error Code with Spring 6 ProblemDetail
+
+Please refer https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-rest-exceptions
+
+```java
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.PropertyKey;
+import org.mvnsearch.model.ProblemDetailException;
+import org.slf4j.helpers.FormattingTuple;
+import org.slf4j.helpers.MessageFormatter;
+import org.springframework.http.ProblemDetail;
+import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
+
+import java.net.URI;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+public class ProblemDetailExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final String BUNDLE_FQN = "app.ErrorMessages";
+    //please use your own error message properties file
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_FQN, new Locale("en", "US"));
+    private static final String[] URL_PREFIXES = new String[]{"https://", "http://"};
+
+    public static ProblemDetail fromProblemDetailException(ProblemDetailException e, Object... params) {
+        return fromErrorCode(e, e.getHttpStatusCode(), e.getErrorCode(), params);
+    }
+
+    public static ProblemDetail fromErrorCode(Exception e, int httpStatusCode,
+                                              @PropertyKey(resourceBundle = BUNDLE_FQN) String errorCode, Object... params) {
+        String message = errorMessage(errorCode, params);
+        ProblemDetail problemDetail = ProblemDetail.forStatus(httpStatusCode);
+        problemDetail.setTitle(e.getClass().getCanonicalName());
+        problemDetail.setDetail(message);
+        final URI type = extractUri(message);
+        if (type != null) {
+            problemDetail.setType(type);
+        }
+        problemDetail.setProperty("errorCode", errorCode);
+        if (params != null && params.length > 0) {
+            problemDetail.setProperty("params", params);
+        }
+        return problemDetail;
+    }
+
+    @Nullable
+    private static URI extractUri(String message) {
+        for (String urlPrefix : URL_PREFIXES) {
+            if (message.contains(urlPrefix)) {
+                int offset = message.indexOf(urlPrefix);
+                int endOffset = message.indexOf(" ", offset);
+                if (endOffset == -1) {
+                    endOffset = message.length();
+                }
+                return URI.create(message.substring(offset, endOffset));
+            }
+        }
+        return null;
+    }
+
+    public static String errorMessage(@PropertyKey(resourceBundle = BUNDLE_FQN) String key, Object... params) {
+        if (RESOURCE_BUNDLE.containsKey(key)) {
+            String value = RESOURCE_BUNDLE.getString(key);
+            final FormattingTuple tuple = MessageFormatter.arrayFormat(value, params);
+            return key + " - " + tuple.getMessage();
+        } else {
+            return MessageFormatter.arrayFormat(key, params).getMessage();
+        }
+    }
+}
 ```
 
 # FAQ
@@ -111,3 +182,5 @@ For more error code design with Rust, please visit https://github.com/linux-chin
 * HTTP Status cheatsheet: https://devhints.io/http-status
 * @PropertyKey support for slf4j message format - https://youtrack.jetbrains.com/issue/IDEA-286726
 * @PrintFormat: annotation to printf-like methods - https://youtrack.jetbrains.com/issue/IDEA-283556
+* Spring Boot 3 : Error Responses using Problem Details for HTTP APIs - https://www.sivalabs.in/spring-boot-3-error-reporting-using-problem-details/
+
