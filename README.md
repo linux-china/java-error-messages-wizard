@@ -183,4 +183,5 @@ For more error code design with Rust, please visit https://github.com/linux-chin
 * @PropertyKey support for slf4j message format - https://youtrack.jetbrains.com/issue/IDEA-286726
 * @PrintFormat: annotation to printf-like methods - https://youtrack.jetbrains.com/issue/IDEA-283556
 * Spring Boot 3 : Error Responses using Problem Details for HTTP APIs - https://www.sivalabs.in/spring-boot-3-error-reporting-using-problem-details/
+* Parameterized Logging With SLF4J: https://www.baeldung.com/slf4j-parameterized-logging
 
