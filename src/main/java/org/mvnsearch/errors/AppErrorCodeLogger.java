@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 public class AppErrorCodeLogger implements Logger {
     private final Logger delegate;
     private static final String BUNDLE_FQN = "app.ErrorMessages";
+    private static final String ERROR_CODE_NAME = "error";
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_FQN, new Locale("en", "US"));
 
     public AppErrorCodeLogger(Logger delegate) {
@@ -28,22 +29,23 @@ public class AppErrorCodeLogger implements Logger {
         }
     }
 
-    private static String errorCodeFormat(String format) {
-        if (RESOURCE_BUNDLE.containsKey(format)) {
-            return format + " - " + RESOURCE_BUNDLE.getString(format);
+    private static String errorCodeFormat(String errorCode) {
+        if (RESOURCE_BUNDLE.containsKey(errorCode)) {
+            //return errorCode + " - " + RESOURCE_BUNDLE.getString(errorCode);
+            return RESOURCE_BUNDLE.getString(errorCode);
         } else {
-            return format;
+            return errorCode;
         }
     }
 
     @Override
-    public void trace(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.trace(errorCodeFormat(msg));
+    public void trace(@PropertyKey(resourceBundle = BUNDLE_FQN) String format) {
+        delegate.atTrace().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format));
     }
 
     @Override
     public void trace(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.trace(errorCodeFormat(format));
+        delegate.atTrace().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
 
@@ -60,17 +62,17 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void trace(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.trace(errorCodeFormat(format), arg1, arg2);
+        delegate.atTrace().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void trace(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.trace(errorCodeFormat(format), arguments);
+        delegate.atTrace().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void trace(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.trace(errorCodeFormat(msg), t);
+        delegate.atTrace().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -80,27 +82,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void trace(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.trace(marker, errorCodeFormat(msg));
+        delegate.atTrace().addKeyValue(ERROR_CODE_NAME, msg).addMarker(marker).log(errorCodeFormat(msg));
     }
 
     @Override
     public void trace(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.trace(marker, errorCodeFormat(format), arg);
+        delegate.atTrace().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void trace(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.trace(marker, errorCodeFormat(format), arg1, arg2);
+        delegate.atTrace().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void trace(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... argArray) {
-        delegate.trace(marker, errorCodeFormat(format), argArray);
+        delegate.atTrace().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), argArray);
     }
 
     @Override
     public void trace(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.trace(marker, errorCodeFormat(msg), t);
+        delegate.atTrace().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -110,27 +112,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void debug(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.debug(errorCodeFormat(msg));
+        delegate.atDebug().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void debug(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.debug(errorCodeFormat(format), arg);
+        delegate.atDebug().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void debug(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.debug(errorCodeFormat(format), arg1, arg2);
+        delegate.atDebug().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void debug(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.debug(errorCodeFormat(format), arguments);
+        delegate.atDebug().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void debug(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.debug(errorCodeFormat(msg), t);
+        delegate.atDebug().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -140,27 +142,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void debug(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.debug(marker, errorCodeFormat(msg));
+        delegate.atDebug().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void debug(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.debug(marker, errorCodeFormat(format), arg);
+        delegate.atDebug().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void debug(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.debug(marker, errorCodeFormat(format), arg1, arg2);
+        delegate.atDebug().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void debug(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.debug(marker, errorCodeFormat(format), arguments);
+        delegate.atDebug().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void debug(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.debug(marker, errorCodeFormat(msg), t);
+        delegate.atDebug().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -170,27 +172,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void info(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.info(errorCodeFormat(msg));
+        delegate.atInfo().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void info(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.info(errorCodeFormat(format), arg);
+        delegate.atInfo().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void info(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.info(errorCodeFormat(format), arg1, arg2);
+        delegate.atInfo().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void info(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.info(errorCodeFormat(format), arguments);
+        delegate.atInfo().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void info(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.info(errorCodeFormat(msg), t);
+        delegate.atInfo().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -200,27 +202,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void info(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.info(marker, errorCodeFormat(msg));
+        delegate.atInfo().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void info(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.info(marker, errorCodeFormat(format), arg);
+        delegate.atInfo().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void info(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.info(marker, errorCodeFormat(format), arg1, arg2);
+        delegate.atInfo().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void info(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.info(marker, errorCodeFormat(format), arguments);
+        delegate.atInfo().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void info(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.info(marker, errorCodeFormat(msg), t);
+        delegate.atInfo().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -230,27 +232,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void warn(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.warn(errorCodeFormat(msg));
+        delegate.atWarn().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void warn(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.warn(errorCodeFormat(format), arg);
+        delegate.atWarn().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void warn(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.warn(errorCodeFormat(format), arguments);
+        delegate.atWarn().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void warn(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.warn(errorCodeFormat(format), arg1, arg2);
+        delegate.atWarn().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void warn(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.warn(errorCodeFormat(msg), t);
+        delegate.atWarn().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -260,27 +262,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void warn(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.warn(marker, errorCodeFormat(msg));
+        delegate.atWarn().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void warn(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.warn(marker, errorCodeFormat(format), arg);
+        delegate.atWarn().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void warn(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.warn(marker, errorCodeFormat(format), arg1, arg2);
+        delegate.atWarn().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void warn(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.warn(marker, errorCodeFormat(format), arguments);
+        delegate.atWarn().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void warn(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.warn(marker, errorCodeFormat(msg), t);
+        delegate.atWarn().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -290,27 +292,27 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void error(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.error(errorCodeFormat(msg));
+        delegate.atError().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void error(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.error(errorCodeFormat(format), arg);
+        delegate.atError().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void error(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.error(errorCodeFormat(format), arg1, arg2);
+        delegate.atError().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void error(@PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.error(errorCodeFormat(format), arguments);
+        delegate.atError().addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void error(@PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.error(errorCodeFormat(msg), t);
+        delegate.atError().addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 
     @Override
@@ -320,26 +322,26 @@ public class AppErrorCodeLogger implements Logger {
 
     @Override
     public void error(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg) {
-        delegate.error(marker, errorCodeFormat(msg));
+        delegate.atError().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg));
     }
 
     @Override
     public void error(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg) {
-        delegate.error(marker, errorCodeFormat(format), arg);
+        delegate.atError().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg);
     }
 
     @Override
     public void error(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object arg1, Object arg2) {
-        delegate.error(marker, errorCodeFormat(format), arg1, arg2);
+        delegate.atError().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arg1, arg2);
     }
 
     @Override
     public void error(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String format, Object... arguments) {
-        delegate.error(marker, errorCodeFormat(format), arguments);
+        delegate.atError().addMarker(marker).addKeyValue(ERROR_CODE_NAME, format).log(errorCodeFormat(format), arguments);
     }
 
     @Override
     public void error(Marker marker, @PropertyKey(resourceBundle = BUNDLE_FQN) String msg, Throwable t) {
-        delegate.error(marker, errorCodeFormat(msg), t);
+        delegate.atError().addMarker(marker).addKeyValue(ERROR_CODE_NAME, msg).log(errorCodeFormat(msg), t);
     }
 }
